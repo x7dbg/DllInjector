@@ -38,3 +38,9 @@
 *.ipdb
 *.log
 *.res
+.vs/DllInjector/v16/.suo
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+*.ipch
