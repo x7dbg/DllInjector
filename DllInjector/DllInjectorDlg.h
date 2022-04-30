@@ -6,7 +6,7 @@
 #include "Injector.h"
 #include "DragPic.h"
 
-#include <map>
+//#include <map>
 // CDllInjectorDlg 对话框
 class CDllInjectorDlg : public CDialogEx
 {
@@ -40,14 +40,15 @@ public:
     afx_msg void OnBnClickedBtngetdllpath();
     afx_msg void OnBnClickedButtonInjector();
     afx_msg void OnCbnDropdownComboProcessList();
+    afx_msg void OnBnClickedButtonRefresh();
 
     void GetAllProcess();
-
+    void RefreshProcess();
 private:
     CEdit m_editDllPath;
     CComboBox m_comboxInjecrotMode;
     CInjector* m_pInjector;
     CComboBox m_comboProcessList;
-    std::map<DWORD, CString> m_mapProcessList;
+    //std::map<DWORD, CString> m_mapProcessList;
     CDragPic m_picDrag;
 };

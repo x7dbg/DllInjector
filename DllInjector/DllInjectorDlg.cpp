@@ -92,6 +92,7 @@ BEGIN_MESSAGE_MAP(CDllInjectorDlg, CDialogEx)
     ON_BN_CLICKED(IDC_BTNGETDLLPATH, &CDllInjectorDlg::OnBnClickedBtngetdllpath)
     ON_BN_CLICKED(IDC_BUTTON_INJECTOR, &CDllInjectorDlg::OnBnClickedButtonInjector)
     ON_CBN_DROPDOWN(IDC_COMBO_PROCESS_LIST, &CDllInjectorDlg::OnCbnDropdownComboProcessList)
+    ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CDllInjectorDlg::OnBnClickedButtonRefresh)
 END_MESSAGE_MAP()
 
 
@@ -126,7 +127,7 @@ BOOL CDllInjectorDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-    GetAllProcess();
+    RefreshProcess();
 
     m_comboxInjecrotMode.InsertString(INJECTORDLL_FORREMOTRTHREAD, _T("远程线程注入"));
     m_comboxInjecrotMode.InsertString(INJECTORDLL_FORMEMORYMAP,_T("内存映射注入"));
@@ -300,17 +301,7 @@ void CDllInjectorDlg::OnBnClickedButtonInjector()
 
 void CDllInjectorDlg::OnCbnDropdownComboProcessList()
 {
-    m_comboProcessList.Clear();
-
-    GetAllProcess();
-//     CString strTitle;
-// 
-//     for each (auto var in m_mapProcessList)
-//     {
-//         strTitle.Format(_T("[%d] "),var.first);
-//         strTitle += var.second;
-//         m_comboProcessList.InsertString(-1, strTitle);
-//     }
+    
 }
 
 void CDllInjectorDlg::GetAllProcess()
@@ -332,4 +323,24 @@ void CDllInjectorDlg::GetAllProcess()
         //m_mapProcessList.insert(std::make_pair(pe.th32ProcessID,pe.szExeFile));
         bProcess = Process32Next(hProcess, &pe);
     }
+}
+
+void CDllInjectorDlg::OnBnClickedButtonRefresh()
+{
+    RefreshProcess();
+}
+
+void CDllInjectorDlg::RefreshProcess()
+{
+    m_comboProcessList.Clear();
+
+    GetAllProcess();
+    //     CString strTitle;
+    // 
+    //     for each (auto var in m_mapProcessList)
+    //     {
+    //         strTitle.Format(_T("[%d] "),var.first);
+    //         strTitle += var.second;
+    //         m_comboProcessList.InsertString(-1, strTitle);
+    //     }
 }

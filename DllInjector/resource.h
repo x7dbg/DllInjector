@@ -9,7 +9,6 @@
 #define IDR_MAINFRAME                   128
 #define IDI_ICON_NODRAG                 132
 #define IDI_ICON_DRAG                   134
-#define IDC_CURSOR1                     135
 #define IDC_CURSOR                      135
 #define IDC_LINKBBS                     1001
 #define IDC_EDIT_DLL_PATH               1002
