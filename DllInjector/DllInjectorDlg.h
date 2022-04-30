@@ -41,6 +41,7 @@ public:
     afx_msg void OnBnClickedButtonInjector();
     afx_msg void OnCbnDropdownComboProcessList();
     afx_msg void OnBnClickedButtonRefresh();
+    afx_msg void OnBnClickedCheckTopmost();
 
     void GetAllProcess();
     void RefreshProcess();

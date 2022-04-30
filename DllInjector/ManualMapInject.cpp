@@ -1,11 +1,6 @@
 #include "pch.h"
 #include "ManualMapInject.h"
-#include <stdio.h>
-#include <string>
-#include <fstream>
-#include <iostream>
 
-using namespace std;
 
 #ifdef _WIN64
 #define CURRENT_ARCH IMAGE_FILE_MACHINE_AMD64
@@ -140,7 +135,7 @@ bool ManualMapDll(HANDLE hProc, BYTE* pSrcData, SIZE_T FileSize, bool ClearHeade
     data.SEHSupport = SEHExceptionSupport;
 
 
-    //File header
+    //PE header
     if (!WriteProcessMemory(hProc, pTargetBase, pSrcData, 0x1000, nullptr)) //only first 0x1000 bytes for the header
     {
         VirtualFreeEx(hProc, pTargetBase, 0, MEM_RELEASE);
@@ -201,6 +196,7 @@ bool ManualMapDll(HANDLE hProc, BYTE* pSrcData, SIZE_T FileSize, bool ClearHeade
         VirtualFreeEx(hProc, pShellcode, 0, MEM_RELEASE);
         return false;
     }
+    WaitForSingleObject(hThread, INFINITE);
     CloseHandle(hThread);
 
 
@@ -299,8 +295,8 @@ bool ManualMapDll(HANDLE hProc, BYTE* pSrcData, SIZE_T FileSize, bool ClearHeade
 
 
 
-#pragma runtime_checks( "", off )
-#pragma optimize( "", off )
+//#pragma runtime_checks( "", off )
+//#pragma optimize( "", off )
 void __stdcall Shellcode(MANUAL_MAPPING_DATA* pData)
 {
     if (!pData)

@@ -13,6 +13,7 @@
 
 #include <tlhelp32.h>
 
+
 #define INJECTORDLL_FORREMOTRTHREAD     0 //远程线程注入
 #define INJECTORDLL_FORMEMORYMAP        1 //内存映射注入
 
@@ -93,6 +94,7 @@ BEGIN_MESSAGE_MAP(CDllInjectorDlg, CDialogEx)
     ON_BN_CLICKED(IDC_BUTTON_INJECTOR, &CDllInjectorDlg::OnBnClickedButtonInjector)
     ON_CBN_DROPDOWN(IDC_COMBO_PROCESS_LIST, &CDllInjectorDlg::OnCbnDropdownComboProcessList)
     ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CDllInjectorDlg::OnBnClickedButtonRefresh)
+    ON_BN_CLICKED(IDC_CHECK_TOPMOST, &CDllInjectorDlg::OnBnClickedCheckTopmost)
 END_MESSAGE_MAP()
 
 
@@ -207,15 +209,17 @@ BOOL CDllInjectorDlg::PreTranslateMessage(MSG* pMsg)
         strTmp.Format(_T("[%d]"),pMsg->wParam);
         
         CString strTitle;
-        for (int i=0;i<m_comboProcessList.GetCount();i++)
+        for (int i = 0; i < m_comboProcessList.GetCount(); i++)
         {
             m_comboProcessList.GetLBText(i, strTitle);
             if (strTitle.Find(strTmp) != -1)
             {
                 m_comboProcessList.SetCurSel(i);
-                break;
+                return FALSE;
             }
         }
+        //运行到这里说明是我们的注入器先运行，再运行的游戏，所以找不到这个进程，需要刷新一下
+        RefreshProcess();
     }
     return CDialogEx::PreTranslateMessage(pMsg);
 }
@@ -343,4 +347,21 @@ void CDllInjectorDlg::RefreshProcess()
     //         strTitle += var.second;
     //         m_comboProcessList.InsertString(-1, strTitle);
     //     }
+}
+
+void CDllInjectorDlg::OnBnClickedCheckTopmost()
+{
+    static bool bIsTop = true;
+//     if (bIsTop)
+//     {
+//         SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+//     }
+//     else
+//     {
+//         SetWindowPos(&wndNoTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+//     }
+    const CWnd* pTosMost;
+    bIsTop ? pTosMost = &wndTopMost : pTosMost = &wndNoTopMost;
+    SetWindowPos(pTosMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+    bIsTop = !bIsTop;
 }
