@@ -4,6 +4,8 @@
 
 #pragma once
 #include "Injector.h"
+#include "DragPic.h"
+
 #include <map>
 // CDllInjectorDlg 对话框
 class CDllInjectorDlg : public CDialogEx
@@ -47,4 +49,5 @@ private:
     CInjector* m_pInjector;
     CComboBox m_comboProcessList;
     std::map<DWORD, CString> m_mapProcessList;
+    CDragPic m_picDrag;
 };

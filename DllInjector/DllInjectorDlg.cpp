@@ -80,6 +80,7 @@ void CDllInjectorDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_EDIT_DLL_PATH, m_editDllPath);
     DDX_Control(pDX, IDC_COMBO_INJECTOR_MODE, m_comboxInjecrotMode);
     DDX_Control(pDX, IDC_COMBO_PROCESS_LIST, m_comboProcessList);
+    DDX_Control(pDX, IDC_DRAG, m_picDrag);
 }
 
 BEGIN_MESSAGE_MAP(CDllInjectorDlg, CDialogEx)
@@ -124,6 +125,8 @@ BOOL CDllInjectorDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
+
+    GetAllProcess();
 
     m_comboxInjecrotMode.InsertString(INJECTORDLL_FORREMOTRTHREAD, _T("远程线程注入"));
     m_comboxInjecrotMode.InsertString(INJECTORDLL_FORMEMORYMAP,_T("内存映射注入"));
@@ -197,7 +200,22 @@ BOOL CDllInjectorDlg::PreTranslateMessage(MSG* pMsg)
             return FALSE;
         }
     }
-
+    if (pMsg->message == WM_USER_SELECTPROCESS)
+    {
+        CString strTmp;
+        strTmp.Format(_T("[%d]"),pMsg->wParam);
+        
+        CString strTitle;
+        for (int i=0;i<m_comboProcessList.GetCount();i++)
+        {
+            m_comboProcessList.GetLBText(i, strTitle);
+            if (strTitle.Find(strTmp) != -1)
+            {
+                m_comboProcessList.SetCurSel(i);
+                break;
+            }
+        }
+    }
     return CDialogEx::PreTranslateMessage(pMsg);
 }
 
@@ -285,14 +303,14 @@ void CDllInjectorDlg::OnCbnDropdownComboProcessList()
     m_comboProcessList.Clear();
 
     GetAllProcess();
-    CString strTitle;
-
-    for each (auto var in m_mapProcessList)
-    {
-        strTitle.Format(_T("[%d] "),var.first);
-        strTitle += var.second;
-        m_comboProcessList.InsertString(-1, strTitle);
-    }
+//     CString strTitle;
+// 
+//     for each (auto var in m_mapProcessList)
+//     {
+//         strTitle.Format(_T("[%d] "),var.first);
+//         strTitle += var.second;
+//         m_comboProcessList.InsertString(-1, strTitle);
+//     }
 }
 
 void CDllInjectorDlg::GetAllProcess()
@@ -304,11 +322,14 @@ void CDllInjectorDlg::GetAllProcess()
     pe.dwSize = sizeof(PROCESSENTRY32);
 
     hProcess = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);//获取进程快照
-
+    CString strTitle;
     bProcess = Process32First(hProcess, &pe);              //获取第一个进程信息
     while (bProcess)
     {
-        m_mapProcessList.insert(std::make_pair(pe.th32ProcessID,pe.szExeFile));
+        strTitle.Format(_T("[%d] "), pe.th32ProcessID);
+        strTitle += pe.szExeFile;
+        m_comboProcessList.InsertString(-1, strTitle);
+        //m_mapProcessList.insert(std::make_pair(pe.th32ProcessID,pe.szExeFile));
         bProcess = Process32Next(hProcess, &pe);
     }
 }
